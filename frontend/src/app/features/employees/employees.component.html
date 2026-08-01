@@ -1,0 +1,13 @@
+<app-page-header eyebrow="People management" title="Employees" placeholder="Search employees" [searchControl]="searchControl" (submitted)="loadEmployees()">
+  <select [formControl]="departmentFilter"><option value="">All departments</option>@for (department of departments(); track department.id) {<option [value]="department.id">{{ department.name }}</option>}</select>
+  <select [formControl]="statusFilter"><option value="">All statuses</option><option value="ACTIVE">Active</option><option value="INACTIVE">Inactive</option><option value="ON_LEAVE">On Leave</option></select>
+</app-page-header>
+<section class="tab-summary">
+  <article><span>Total employees</span><strong>{{ employees().length }}</strong><small>people in current view</small></article>
+  <article><span>Departments</span><strong>{{ activeDepartments().length }}</strong><small>active department options</small></article>
+  <article><span>Employee status</span><strong>Tracked</strong><small>active, inactive, leave</small></article>
+</section>
+@if (auth.isAdmin()) {
+  <app-employee-form [form]="form" [departments]="activeDepartments()" [editingId]="editingId()" [saving]="saving()" [error]="error()" (save)="save()" (cancel)="cancelEdit()" />
+}
+<app-employee-table [employees]="employees()" [loading]="loading()" [canManage]="auth.isAdmin()" (edit)="edit($event)" (remove)="remove($event)" />

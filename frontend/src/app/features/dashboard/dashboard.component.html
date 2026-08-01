@@ -1,0 +1,85 @@
+<section class="dashboard-hero">
+  <div>
+    <p class="eyebrow">Company overview</p>
+    <h2>Dashboard</h2>
+    <span>Track employees, departments, projects, and task progress from one place.</span>
+  </div>
+
+  <div class="hero-badge">
+    <strong>Live data</strong>
+    <small>Updated from backend API</small>
+  </div>
+</section>
+
+@if (loading()) {
+  <section class="state loading-state">
+    <span class="loader"></span>
+    <div>
+      <strong>Loading dashboard...</strong>
+      <p>Please wait while we fetch the latest company summary.</p>
+    </div>
+  </section>
+} @else if (error()) {
+  <section class="state error">
+    <div class="state-icon">!</div>
+    <div>
+      <strong>Unable to load dashboard</strong>
+      <p>{{ error() }}</p>
+    </div>
+  </section>
+} @else if (summary()) {
+  <section class="insights-strip">
+    <article>
+      <span>Completion</span>
+      <strong>{{ summary()?.completed_tasks || 0 }}</strong>
+      <small>completed tasks</small>
+    </article>
+    <article>
+      <span>Pending</span>
+      <strong>{{ summary()?.pending_tasks || 0 }}</strong>
+      <small>tasks need attention</small>
+    </article>
+    <article>
+      <span>Overdue</span>
+      <strong>{{ summary()?.overdue_tasks || 0 }}</strong>
+      <small>past due date</small>
+    </article>
+  </section>
+
+  <section class="cards" aria-label="Dashboard summary cards">
+    @for (card of cards(); track card.label) {
+      <article class="card">
+        <div class="card-icon">{{ card.label.charAt(0) }}</div>
+        <div>
+          <span>{{ card.label }}</span>
+          <strong>{{ card.value }}</strong>
+        </div>
+      </article>
+    }
+  </section>
+
+  @if (isAdmin()) {
+    <section class="admin-panel">
+      <div>
+        <p class="eyebrow">Admin control</p>
+        <h3>Full system access enabled</h3>
+        <span>Admin role is verified in the frontend routes and backend APIs before management changes are allowed.</span>
+      </div>
+      <div class="admin-actions">
+        <a routerLink="/departments">Manage Departments</a>
+        <a routerLink="/employees">Manage Employees</a>
+        <a routerLink="/projects">Manage Projects</a>
+        <a routerLink="/tasks">Manage Tasks</a>
+        <a href="http://127.0.0.1:8000/admin/" target="_blank" rel="noopener">Django Admin</a>
+      </div>
+    </section>
+  }
+} @else {
+  <section class="state">
+    <div class="state-icon">0</div>
+    <div>
+      <strong>No dashboard data found</strong>
+      <p>Create departments, employees, projects, and tasks to see dashboard insights here.</p>
+    </div>
+  </section>
+}

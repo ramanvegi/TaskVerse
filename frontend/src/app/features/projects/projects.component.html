@@ -1,0 +1,12 @@
+<app-page-header eyebrow="Delivery management" title="Projects" placeholder="Search projects" [searchControl]="searchControl" (submitted)="loadProjects()">
+  <select [formControl]="statusFilter"><option value="">All statuses</option>@for (status of statuses; track status) {<option [value]="status">{{ status }}</option>}</select>
+</app-page-header>
+<section class="tab-summary">
+  <article><span>Total projects</span><strong>{{ projects().length }}</strong><small>projects in current view</small></article>
+  <article><span>Assignable employees</span><strong>{{ activeEmployees().length }}</strong><small>active people available</small></article>
+  <article><span>Status stages</span><strong>{{ statuses.length }}</strong><small>delivery workflow states</small></article>
+</section>
+@if (auth.isAdmin()) {
+  <app-project-form [form]="form" [employees]="activeEmployees()" [statuses]="statuses" [editingId]="editingId()" [saving]="saving()" [error]="error()" (save)="save()" (cancel)="cancelEdit()" />
+}
+<app-project-table [projects]="projects()" [loading]="loading()" [canManage]="auth.isAdmin()" (edit)="edit($event)" (remove)="remove($event)" />

@@ -1,0 +1,81 @@
+.panel {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 20px;
+  padding: 24px;
+  border: 1px solid #e2e8f0;
+  border-radius: 22px;
+  background: linear-gradient(180deg, #ffffff, #f8fbff);
+  box-shadow: 0 16px 38px rgba(15, 23, 42, 0.08);
+}
+.panel::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  background: linear-gradient(90deg, #2563eb, #06b6d4, #22c55e);
+}
+.form-panel h3,
+.panel h3 {
+  margin: 0 0 16px;
+  color: #0f172a;
+  font-size: 22px;
+  letter-spacing: -0.03em;
+}
+.department-form,
+.employee-form,
+.task-form {
+  display: grid;
+  gap: 16px;
+  align-items: end;
+}
+.department-form { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.employee-form { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.task-form { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+label {
+  display: grid;
+  gap: 7px;
+  color: #334155;
+  font-weight: 800;
+}
+.wide { grid-column: span 2; }
+.checkbox { display: flex; align-items: center; gap: 9px; }
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 13px;
+  background: #fff;
+  color: #0f172a;
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.04);
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 0;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.13);
+}
+button {
+  border: 0;
+  border-radius: 13px;
+  padding: 11px 16px;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #fff;
+  cursor: pointer;
+  font-weight: 900;
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.20);
+}
+button:disabled { opacity: 0.65; cursor: not-allowed; box-shadow: none; }
+.secondary { background: #e2e8f0; color: #0f172a; box-shadow: none; }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.alert { margin-top: 14px; color: #991b1b; background: #fee2e2; padding: 12px; border-radius: 13px; font-weight: 700; }
+@media (max-width: 1100px) {
+  .department-form,
+  .employee-form,
+  .task-form { grid-template-columns: 1fr; }
+  .wide { grid-column: auto; }
+}

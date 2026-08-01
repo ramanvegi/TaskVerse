@@ -1,0 +1,27 @@
+<section class="auth-page">
+  <form [formGroup]="form" (ngSubmit)="submit()" class="auth-card">
+    <p class="eyebrow">Create account</p>
+    <h1>Register</h1>
+    <p class="muted">Create your workspace user and continue to the dashboard.</p>
+
+    @if (error()) { <div class="alert">{{ error() }}</div> }
+
+    <div class="grid">
+      <label>First name<input formControlName="first_name" /></label>
+      <label>Last name<input formControlName="last_name" /></label>
+    </div>
+    <label>Username<input formControlName="username" /></label>
+    <label>Email<input type="email" formControlName="email" /></label>
+    <label>Phone<input formControlName="phone_number" /></label>
+    <label>Password<input type="password" formControlName="password" /></label>
+    <label>Confirm password<input type="password" formControlName="password_confirm" /></label>
+
+    @if (form.touched && form.invalid) { <small>Please fill all required fields correctly.</small> }
+
+    <button type="submit" [disabled]="form.invalid || loading()">
+      {{ loading() ? 'Creating account...' : 'Register' }}
+    </button>
+
+    <p class="switch">Already registered? <a routerLink="/login">Login</a></p>
+  </form>
+</section>

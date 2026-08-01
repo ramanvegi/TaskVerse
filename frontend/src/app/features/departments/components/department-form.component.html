@@ -1,0 +1,14 @@
+<section class="panel form-panel">
+  <h3>{{ editingId ? 'Edit Department' : 'Add Department' }}</h3>
+  <form [formGroup]="form" (ngSubmit)="save.emit()" class="department-form">
+    <label>Name<input formControlName="name" placeholder="Engineering" /></label>
+    <label>Code<input formControlName="code" placeholder="ENG" /></label>
+    <label>Description<input formControlName="description" placeholder="Short description" /></label>
+    <label class="checkbox"><input type="checkbox" formControlName="is_active" /> Active</label>
+    <div class="actions">
+      <button type="submit" [disabled]="form.invalid || saving">{{ saving ? 'Saving...' : 'Save' }}</button>
+      @if (editingId) { <button type="button" class="secondary" (click)="cancel.emit()">Cancel</button> }
+    </div>
+  </form>
+  @if (error) { <div class="alert">{{ error }}</div> }
+</section>

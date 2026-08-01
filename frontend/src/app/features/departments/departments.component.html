@@ -1,0 +1,29 @@
+<app-page-header
+  eyebrow="Organization setup"
+  title="Departments"
+  placeholder="Search departments"
+  [searchControl]="searchControl"
+  (submitted)="loadDepartments()"
+/>
+<section class="tab-summary">
+  <article><span>Total departments</span><strong>{{ departments().length }}</strong><small>teams configured</small></article>
+  <article><span>Active view</span><strong>{{ departments().length }}</strong><small>available in list</small></article>
+  <article><span>Setup status</span><strong>Ready</strong><small>employee mapping enabled</small></article>
+</section>
+@if (auth.isAdmin()) {
+  <app-department-form
+    [form]="form"
+    [editingId]="editingId()"
+    [saving]="saving()"
+    [error]="error()"
+    (save)="save()"
+    (cancel)="cancelEdit()"
+  />
+}
+<app-department-table
+  [departments]="departments()"
+  [loading]="loading()"
+  [canManage]="auth.isAdmin()"
+  (edit)="edit($event)"
+  (remove)="remove($event)"
+/>

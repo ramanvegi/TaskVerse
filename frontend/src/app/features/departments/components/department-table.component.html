@@ -1,0 +1,25 @@
+<section class="panel">
+  @if (loading) { <p class="state">Loading departments...</p> }
+  @else if (!departments.length) { <p class="state">No departments found.</p> }
+  @else {
+    <table>
+      <thead><tr><th>Name</th><th>Code</th><th>Description</th><th>Status</th>@if (canManage) { <th>Actions</th> }</tr></thead>
+      <tbody>
+        @for (department of departments; track department.id) {
+          <tr>
+            <td>{{ department.name }}</td>
+            <td>{{ department.code || '-' }}</td>
+            <td>{{ department.description || '-' }}</td>
+            <td><span [class.inactive]="!department.is_active">{{ department.is_active ? 'Active' : 'Inactive' }}</span></td>
+            @if (canManage) {
+              <td class="row-actions">
+                <button type="button" class="secondary" (click)="edit.emit(department)">Edit</button>
+                <button type="button" class="danger" (click)="remove.emit(department)">Delete</button>
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</section>

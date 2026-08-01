@@ -1,0 +1,1676 @@
+
+API DOCUMENTATION, SWAGGER, OPENAPI SCHEMA, AND HEALTH CHECK - DEEP EXPLANATION
+================================================================================
+
+Project:
+TaskVerse
+
+This file explains in detail:
+
+1. What API documentation means
+2. What Swagger UI is
+3. What OpenAPI schema is
+4. What Health Check API is
+5. How these are used in this project
+6. How to test APIs using Swagger
+7. Why backend server must be running
+8. Whether two terminals are required to run the project
+
+
+1. WHAT IS AN API?
+==================
+
+API means Application Programming Interface.
+
+In this project, API means backend URLs that the frontend or another tool can call to perform actions.
+
+Examples from this project:
+
+POST /api/auth/login/
+GET  /api/employees/
+POST /api/projects/
+GET  /api/tasks/
+POST /api/tasks/{id}/comments/
+
+These APIs are created in the Django backend using Django REST Framework.
+
+The Angular frontend calls these APIs using HttpClient.
+
+Simple example:
+
+When user clicks Login in Angular:
+
+Angular sends request to:
+
+POST http://127.0.0.1:8000/api/auth/login/
+
+Django backend checks email/password and returns user data plus JWT tokens.
+
+
+2. WHAT IS API DOCUMENTATION?
+=============================
+
+API documentation is a guide/manual that explains how to use backend APIs.
+
+It tells developers:
+
+- What APIs exist
+- What URL to call
+- Which HTTP method to use
+- What request body is required
+- What response will come
+- Which APIs need login token
+- What query parameters are supported
+- What errors can happen
+- What data fields are required
+
+Without API documentation, frontend developers must inspect backend code manually.
+
+With API documentation, they can understand and test APIs from a browser.
+
+
+3. WHY API DOCUMENTATION IS IMPORTANT
+=====================================
+
+In a real project, frontend and backend are often developed separately.
+
+Backend developer creates APIs.
+Frontend developer consumes APIs.
+
+Frontend developer needs to know:
+
+- Login API request format
+- Employee create API fields
+- Project response structure
+- Task status options
+- Whether JWT token is required
+- How to pass Authorization header
+
+API documentation solves this communication problem.
+
+It acts like a contract between frontend and backend.
+
+
+4. WHAT IS SWAGGER UI?
+======================
+
+Swagger UI is a browser-based interactive API documentation page.
+
+In this project Swagger UI is available at:
+
+http://127.0.0.1:8000/api/docs/
+
+Swagger UI allows us to:
+
+- See all backend APIs
+- See API groups/modules
+- See request method: GET, POST, PUT, PATCH, DELETE
+- See request body format
+- See response body format
+- Test APIs directly from browser
+- Authorize using JWT token
+- Check backend responses immediately
+
+Swagger UI is very useful during development and testing.
+
+It works like Postman, but it is automatically generated from backend code.
+
+
+5. WHAT IS OPENAPI?
+===================
+
+OpenAPI is a standard format for describing REST APIs.
+
+It describes:
+
+- API endpoints
+- HTTP methods
+- Request bodies
+- Response bodies
+- Authentication requirements
+- Parameters
+- Status codes
+- Data schemas/models
+
+OpenAPI is not mainly for humans.
+It is mainly for tools and machines.
+
+In this project, OpenAPI schema is available at:
+
+http://127.0.0.1:8000/api/schema/
+
+That URL returns a machine-readable schema.
+
+Swagger UI reads this OpenAPI schema and displays it as a nice web page.
+
+
+6. DIFFERENCE BETWEEN SWAGGER UI AND OPENAPI SCHEMA
+===================================================
+
+Swagger UI:
+
+- Human-friendly
+- Browser page
+- Easy to read
+- Easy to test APIs
+- Used by developers manually
+
+URL:
+
+http://127.0.0.1:8000/api/docs/
+
+OpenAPI Schema:
+
+- Machine-readable
+- JSON/YAML style API definition
+- Used by Swagger UI and tools
+- Can be used to generate API clients
+
+URL:
+
+http://127.0.0.1:8000/api/schema/
+
+Simple relationship:
+
+Django REST APIs
+      ↓
+drf-spectacular generates OpenAPI schema
+      ↓
+Swagger UI reads schema
+      ↓
+Developer sees API documentation in browser
+
+
+7. WHAT PACKAGE DID WE USE FOR API DOCUMENTATION?
+=================================================
+
+This project uses:
+
+drf-spectacular
+
+It is a Django REST Framework package used to generate OpenAPI schema and Swagger documentation.
+
+In backend/settings.py, it is added to INSTALLED_APPS:
+
+drf_spectacular
+
+In REST_FRAMEWORK settings, this project uses:
+
+DEFAULT_SCHEMA_CLASS = 'drf_spectacular.openapi.AutoSchema'
+
+This tells Django REST Framework:
+
+Use drf-spectacular to generate API schema.
+
+
+8. WHERE ARE SWAGGER AND OPENAPI CONFIGURED?
+============================================
+
+Main URL file:
+
+backend/config/urls.py
+
+The important lines are:
+
+path('api/schema/', SpectacularAPIView.as_view(), name='schema')
+path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui')
+
+These create:
+
+/api/schema/
+/api/docs/
+
+Meaning:
+
+/api/schema/ gives the OpenAPI schema.
+/api/docs/ gives the Swagger UI page.
+
+
+9. WHAT IS HEALTH CHECK API?
+============================
+
+Health check API is a simple API that confirms whether backend is running properly.
+
+In this project:
+
+http://127.0.0.1:8000/api/health/
+
+This API checks:
+
+- Is backend server running?
+- Is Django responding?
+- Is database connected?
+
+Example success response:
+
+{
+  "success": true,
+  "message": "Health check completed successfully.",
+  "data": {
+    "service": "TaskVerse API",
+    "status": "ok",
+    "database": "connected"
+  }
+}
+
+This means:
+
+- Backend is alive
+- API is reachable
+- Database connection is working
+
+
+10. WHY HEALTH CHECK IS USEFUL
+==============================
+
+Health check is useful for debugging.
+
+Example problem:
+
+Frontend says:
+
+Registration failed. Please check that the backend server is running.
+
+First thing to check:
+
+http://127.0.0.1:8000/api/health/
+
+If health check works:
+
+Backend is running.
+Problem may be API validation, token, CORS, or frontend issue.
+
+If health check does not work:
+
+Backend is not running or backend has an error.
+
+Health check is also useful in production for monitoring tools.
+
+
+11. IMPORTANT API DOCUMENTATION URLS IN THIS PROJECT
+====================================================
+
+Backend must be running first.
+
+Swagger UI:
+
+http://127.0.0.1:8000/api/docs/
+
+OpenAPI schema:
+
+http://127.0.0.1:8000/api/schema/
+
+Health check:
+
+http://127.0.0.1:8000/api/health/
+
+
+12. WHY BACKEND SERVER MUST BE RUNNING
+======================================
+
+These URLs are served by Django backend.
+
+If Django backend is not running, these URLs will not open.
+
+To start backend:
+
+cd backend
+python manage.py runserver 127.0.0.1:8000
+
+Or using project virtual environment from backend folder:
+
+..\.venv\Scripts\python.exe manage.py runserver 127.0.0.1:8000
+
+Once backend starts, Django listens on port 8000.
+
+Then these URLs work:
+
+http://127.0.0.1:8000/api/docs/
+http://127.0.0.1:8000/api/schema/
+http://127.0.0.1:8000/api/health/
+
+
+13. HOW TO USE SWAGGER UI STEP BY STEP
+======================================
+
+Step 1: Start backend server
+
+cd backend
+..\.venv\Scripts\python.exe manage.py runserver 127.0.0.1:8000
+
+Step 2: Open Swagger UI
+
+http://127.0.0.1:8000/api/docs/
+
+Step 3: You will see APIs grouped by module.
+
+Example modules:
+
+- auth
+- departments
+- employees
+- projects
+- tasks
+- dashboard
+- reports
+
+Step 4: Click an API.
+
+Example:
+
+POST /api/auth/login/
+
+Step 5: Click Try it out.
+
+Step 6: Enter request body.
+
+Example:
+
+{
+  "email": "raman@gmail.com",
+  "password": "Dev#Pass725!2026"
+}
+
+Step 7: Click Execute.
+
+Step 8: Check response.
+
+If login is successful, response contains:
+
+- user details
+- access token
+- refresh token
+
+
+14. HOW TO TEST PROTECTED APIs IN SWAGGER
+=========================================
+
+Most APIs require login token.
+
+Protected APIs include:
+
+GET /api/departments/
+GET /api/employees/
+GET /api/projects/
+GET /api/tasks/
+GET /api/dashboard/summary/
+
+To test protected APIs:
+
+Step 1: Login using /api/auth/login/
+
+Step 2: Copy access token from response.
+
+Step 3: Click Authorize button in Swagger UI.
+
+Step 4: Enter token like this:
+
+Bearer YOUR_ACCESS_TOKEN
+
+Example:
+
+Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6...
+
+Step 5: Click Authorize.
+
+Step 6: Now call protected APIs.
+
+Swagger will send this header automatically:
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+15. WHAT HAPPENS WITHOUT TOKEN?
+===============================
+
+If you call a protected API without login token, backend returns error.
+
+Example:
+
+{
+  "detail": "Authentication credentials were not provided."
+}
+
+This means:
+
+You are not logged in or token was not sent.
+
+
+16. WHAT HAPPENS WITH EXPIRED OR INVALID TOKEN?
+==============================================
+
+If token is expired or invalid, backend returns error.
+
+Example:
+
+{
+  "detail": "Given token not valid for any token type"
+}
+
+Solution:
+
+- Login again
+- Or call refresh token API
+
+Refresh API:
+
+POST /api/auth/token/refresh/
+
+
+17. WHAT IS REQUEST BODY?
+=========================
+
+Request body is data sent from frontend/client to backend.
+
+Example register request:
+
+{
+  "username": "raman",
+  "email": "raman@gmail.com",
+  "first_name": "Raman",
+  "last_name": "Vegi",
+  "phone_number": "9999999999",
+  "password": "Dev#Pass725!2026",
+  "password_confirm": "Dev#Pass725!2026"
+}
+
+Swagger shows request body format automatically.
+
+
+18. WHAT IS RESPONSE BODY?
+==========================
+
+Response body is data returned by backend.
+
+Example login response:
+
+{
+  "success": true,
+  "message": "Login successful.",
+  "data": {
+    "user": {
+      "id": 2,
+      "username": "raman",
+      "email": "raman@gmail.com",
+      "role": "EMPLOYEE"
+    },
+    "tokens": {
+      "access": "access_token_here",
+      "refresh": "refresh_token_here"
+    }
+  }
+}
+
+Swagger also shows possible response formats.
+
+
+19. COMMON HTTP METHODS IN THIS PROJECT
+=======================================
+
+GET:
+Used to fetch/read data.
+
+Example:
+GET /api/employees/
+
+POST:
+Used to create data or perform action.
+
+Example:
+POST /api/employees/
+
+PUT:
+Used to update full record.
+
+Example:
+PUT /api/employees/1/
+
+PATCH:
+Used to update partial record.
+
+Example:
+PATCH /api/employees/1/
+
+DELETE:
+Used to delete record.
+
+Example:
+DELETE /api/employees/1/
+
+
+20. EXAMPLES OF APIs IN THIS PROJECT
+====================================
+
+Authentication:
+
+POST /api/auth/register/
+POST /api/auth/login/
+POST /api/auth/logout/
+GET  /api/auth/profile/
+POST /api/auth/change-password/
+POST /api/auth/token/refresh/
+
+Departments:
+
+GET    /api/departments/
+POST   /api/departments/
+GET    /api/departments/{id}/
+PATCH  /api/departments/{id}/
+DELETE /api/departments/{id}/
+
+Employees:
+
+GET    /api/employees/
+POST   /api/employees/
+GET    /api/employees/{id}/
+PATCH  /api/employees/{id}/
+DELETE /api/employees/{id}/
+
+Projects:
+
+GET    /api/projects/
+POST   /api/projects/
+GET    /api/projects/{id}/
+PATCH  /api/projects/{id}/
+DELETE /api/projects/{id}/
+POST   /api/projects/{id}/assign-employees/
+POST   /api/projects/{id}/change-status/
+
+Tasks:
+
+GET    /api/tasks/
+POST   /api/tasks/
+GET    /api/tasks/{id}/
+PATCH  /api/tasks/{id}/
+DELETE /api/tasks/{id}/
+POST   /api/tasks/{id}/assign/
+POST   /api/tasks/{id}/change-status/
+GET    /api/tasks/{id}/comments/
+POST   /api/tasks/{id}/comments/
+
+Dashboard and Reports:
+
+GET /api/dashboard/summary/
+GET /api/reports/employees-by-department/
+GET /api/reports/tasks-by-employee/
+GET /api/reports/pending-tasks/
+GET /api/reports/completed-tasks/
+GET /api/reports/project-progress/
+
+
+21. SWAGGER VS POSTMAN
+======================
+
+Swagger UI:
+
+- Built into this project
+- Automatically generated
+- Opens in browser
+- Good for testing APIs quickly
+- Shows request/response documentation
+
+Postman:
+
+- Separate application
+- Good for saving collections
+- Good for team API testing
+- Useful for advanced manual testing
+
+For this project, Swagger UI is enough for basic API testing.
+
+
+22. DOES ANGULAR USE SWAGGER?
+=============================
+
+No.
+
+Angular does not call Swagger.
+
+Swagger is for developers to read and test APIs.
+
+Angular calls the real API endpoints directly through services.
+
+Angular API base URL:
+
+frontend/src/environments/environment.ts
+
+Current base URL:
+
+http://127.0.0.1:8000/api
+
+API constants file:
+
+frontend/src/app/core/constants/api.constants.ts
+
+Angular services:
+
+- AuthService
+- DepartmentService
+- EmployeeService
+- ProjectService
+- TaskService
+- DashboardService
+
+These services use HttpClient to call backend APIs.
+
+
+23. TWO TERMINALS QUESTION
+==========================
+
+Question:
+
+Is it correct that we need two terminals to run this project?
+
+Answer:
+
+Yes, for local development we normally need two terminals.
+
+Why?
+
+Because backend and frontend are two separate applications.
+
+Backend:
+
+- Django server
+- Runs on port 8000
+- Command:
+
+  python manage.py runserver 127.0.0.1:8000
+
+Frontend:
+
+- Angular development server
+- Runs on port 4200
+- Command:
+
+  npm start
+
+Both must run at the same time.
+
+
+24. TERMINAL 1 - BACKEND
+========================
+
+Open first terminal for backend.
+
+From project root:
+
+cd backend
+..\.venv\Scripts\python.exe manage.py runserver 127.0.0.1:8000
+
+Or if virtual environment is activated:
+
+cd backend
+python manage.py runserver 127.0.0.1:8000
+
+Backend URL:
+
+http://127.0.0.1:8000/
+
+API base URL:
+
+http://127.0.0.1:8000/api
+
+Swagger UI:
+
+http://127.0.0.1:8000/api/docs/
+
+Health check:
+
+http://127.0.0.1:8000/api/health/
+
+
+25. TERMINAL 2 - FRONTEND
+=========================
+
+Open second terminal for frontend.
+
+From project root:
+
+cd frontend
+npm start
+
+Frontend URL:
+
+http://localhost:4200/
+
+
+26. WHY NOT ONE TERMINAL?
+=========================
+
+If you run backend server in one terminal, that terminal stays busy running Django.
+
+If you run frontend server, that terminal stays busy running Angular.
+
+So for development, we use:
+
+Terminal 1: Django backend
+Terminal 2: Angular frontend
+
+This is normal for full-stack projects.
+
+
+27. CAN WE RUN IN ONE TERMINAL?
+===============================
+
+Technically yes, but not recommended for beginners.
+
+Advanced options:
+
+- Run one process in background
+- Use scripts
+- Use Docker Compose
+- Use process managers
+
+But for local development, use two terminals.
+
+This is easiest and cleanest.
+
+
+28. HOW TO CHECK IF BOTH ARE RUNNING
+====================================
+
+Backend check:
+
+Open:
+
+http://127.0.0.1:8000/api/health/
+
+Expected:
+
+success true and database connected
+
+Frontend check:
+
+Open:
+
+http://localhost:4200/
+
+Expected:
+
+Angular app opens in browser
+
+
+29. SIMPLE FINAL EXPLANATION
+============================
+
+API documentation is a guide for backend APIs.
+
+Swagger UI is the browser page where we can view and test APIs.
+
+OpenAPI schema is the machine-readable API definition used by Swagger.
+
+Health check is a small API that tells whether backend and database are working.
+
+In this project:
+
+Swagger UI:
+http://127.0.0.1:8000/api/docs/
+
+OpenAPI schema:
+http://127.0.0.1:8000/api/schema/
+
+Health check:
+http://127.0.0.1:8000/api/health/
+
+To run the full project locally, use two terminals:
+
+Terminal 1:
+Backend Django server
+python manage.py runserver 127.0.0.1:8000
+
+Terminal 2:
+Frontend Angular server
+npm start
+
+Backend provides APIs.
+Frontend consumes APIs.
+Swagger helps developers understand and test those APIs.
+Health check confirms backend is alive.
+
+
+30. INTERVIEW / PRESENTATION ANSWER
+===================================
+
+In this project, we created REST APIs using Django REST Framework. To document and test those APIs, we used drf-spectacular, which generates an OpenAPI schema. Swagger UI reads this OpenAPI schema and displays all APIs in an interactive browser page. Using Swagger, we can test login, departments, employees, projects, tasks, dashboard, and report APIs directly from the browser. We also created a health check API to confirm that the backend server and database connection are working. For local development, we run Django backend and Angular frontend separately, so we use two terminals: one for python manage.py runserver and one for npm start.
+
+
+31. IMPORTANT CLARIFICATION: API DOCUMENTATION IS NOT THE API ITSELF
+====================================================================
+
+This is an important point.
+
+Swagger UI and OpenAPI schema do not create business data by themselves.
+
+They only explain and describe the APIs that already exist in the backend.
+
+Example real API:
+
+POST /api/employees/
+
+This API creates an employee.
+
+Swagger documentation for that API only explains:
+
+- URL
+- Method
+- Request body
+- Response body
+- Authentication requirement
+- Possible errors
+
+So the relationship is:
+
+Real API:
+Used by Angular/frontend/Postman to perform actual work.
+
+Swagger UI:
+Used by developers to understand and test APIs.
+
+OpenAPI schema:
+Machine-readable description of APIs.
+
+Simple explanation:
+
+API is the actual backend functionality.
+API documentation is the manual for using that functionality.
+
+
+32. IMPORTANT CLARIFICATION: /api/schema/ DOES NOT RETURN APPLICATION DATA
+==========================================================================
+
+/api/schema/ returns API structure, not employee/project/task data.
+
+For example:
+
+GET /api/employees/
+
+returns employee records.
+
+But:
+
+GET /api/schema/
+
+returns documentation metadata about all APIs.
+
+That schema contains information like:
+
+- paths
+- operations
+- request serializers
+- response serializers
+- security schemes
+- parameters
+- tags
+
+This schema is useful for:
+
+- Swagger UI
+- API documentation tools
+- frontend API client generation
+- automated API testing tools
+- integration with other systems
+
+Normal users do not use /api/schema/ directly.
+Developers and tools use it.
+
+
+33. HOW DRF-SPECTACULAR KNOWS ABOUT OUR APIs
+============================================
+
+drf-spectacular reads Django REST Framework configuration.
+
+It looks at:
+
+- URL patterns
+- API views
+- ViewSets
+- serializers
+- request fields
+- response fields
+- authentication classes
+- permissions
+
+In this project, APIs are connected in:
+
+backend/config/urls.py
+
+Examples:
+
+path('api/auth/', include('apps.authentication.urls'))
+path('api/departments/', include('apps.departments.urls'))
+path('api/employees/', include('apps.employees.urls'))
+path('api/projects/', include('apps.projects.urls'))
+path('api/tasks/', include('apps.tasks.urls'))
+path('api/', include('apps.dashboard.urls'))
+
+Because these URLs are registered, drf-spectacular can discover them and include them in Swagger/OpenAPI documentation.
+
+Serializers are also very important.
+
+Example:
+
+EmployeeSerializer tells Swagger what employee fields exist.
+ProjectSerializer tells Swagger what project fields exist.
+LoginSerializer tells Swagger what login request body expects.
+
+So Swagger documentation is generated from backend code.
+
+
+34. SPECTACULAR SETTINGS IN THIS PROJECT
+========================================
+
+In backend/config/settings.py, this project has SPECTACULAR_SETTINGS.
+
+It defines API documentation details like:
+
+TITLE:
+TaskVerse API
+
+DESCRIPTION:
+REST APIs for employees, departments, projects, tasks, comments, dashboard, and reports.
+
+VERSION:
+1.0.0
+
+These details appear in Swagger UI.
+
+So when we open:
+
+http://127.0.0.1:8000/api/docs/
+
+Swagger shows the API title, description, version, and all endpoints.
+
+
+35. HTTP STATUS CODES YOU WILL SEE IN SWAGGER
+=============================================
+
+APIs return HTTP status codes.
+
+These codes tell whether the request succeeded or failed.
+
+Common status codes in this project:
+
+200 OK:
+Request successful.
+Example: GET /api/employees/ returns employee list.
+
+201 CREATED:
+New record created successfully.
+Example: POST /api/departments/ creates department.
+
+204 NO CONTENT:
+Record deleted successfully or response has no body.
+Example: DELETE /api/employees/{id}/
+
+400 BAD REQUEST:
+Validation error.
+Example: Required field missing or duplicate email.
+
+401 UNAUTHORIZED:
+Authentication token missing or invalid.
+Example: Calling protected API without Bearer token.
+
+403 FORBIDDEN:
+User is authenticated but does not have permission.
+
+404 NOT FOUND:
+Requested record does not exist.
+Example: GET /api/employees/9999/
+
+500 INTERNAL SERVER ERROR:
+Backend server error.
+This usually means there is a bug or unexpected exception.
+
+Swagger helps us see these responses while testing.
+
+
+36. HEALTH CHECK IMPLEMENTATION IN THIS PROJECT
+===============================================
+
+Health check code is in:
+
+backend/common/views.py
+
+The class name is:
+
+HealthCheckView
+
+Important details:
+
+- It is public.
+- It does not require JWT login.
+- It checks database connectivity.
+- It returns structured API response.
+
+In code, it runs a simple database query:
+
+SELECT 1
+
+If that query works, database status is:
+
+connected
+
+If database query fails, database status becomes:
+
+unavailable
+
+This helps us quickly understand whether the backend and database are working.
+
+Health check URL is connected in:
+
+backend/config/urls.py
+
+Route:
+
+path('api/health/', HealthCheckView.as_view(), name='health-check')
+
+
+37. HOW ANGULAR AUTOMATICALLY SENDS JWT TOKEN
+=============================================
+
+In this project, Angular has an auth interceptor.
+
+File:
+
+frontend/src/app/core/interceptors/auth.interceptor.ts
+
+This interceptor checks every outgoing HTTP request.
+
+If request URL starts with backend API base URL and access token exists, Angular adds this header automatically:
+
+Authorization: Bearer <access_token>
+
+That means protected APIs can work after login without manually adding token in every service.
+
+Interceptor is registered in:
+
+frontend/src/app/app.config.ts
+
+It uses:
+
+provideHttpClient(withInterceptors([authInterceptor]))
+
+This is why after login, pages like Departments, Employees, Projects, Tasks can call protected APIs.
+
+Swagger does not use Angular interceptor.
+
+In Swagger, we manually click Authorize and paste token.
+
+Angular does it automatically through interceptor.
+
+
+38. WHY SWAGGER MAY NOT SHOW PERFECT REQUEST/RESPONSE IN SOME CASES
+====================================================================
+
+Swagger is generated automatically from backend code.
+
+Most of the time it is accurate.
+
+But sometimes Swagger may need extra hints if:
+
+- API uses custom response wrapper
+- API uses dynamic serializer
+- API has custom actions
+- API returns different response formats based on condition
+- API uses complex nested data
+
+In this project, we use a common response format like:
+
+{
+  "success": true,
+  "message": "...",
+  "data": {...}
+}
+
+Swagger can still document APIs, but for highly customized responses, backend developers sometimes add extra schema annotations.
+
+
+39. COMMON SWAGGER / API DOCUMENTATION PROBLEMS AND FIXES
+=========================================================
+
+Problem 1:
+Swagger page does not open.
+
+Possible reason:
+Backend is not running.
+
+Fix:
+
+cd backend
+..\.venv\Scripts\python.exe manage.py runserver 127.0.0.1:8000
+
+
+Problem 2:
+/api/docs/ opens but protected API gives 401.
+
+Possible reason:
+JWT token not added in Swagger Authorize button.
+
+Fix:
+
+Login first, copy access token, click Authorize, enter:
+
+Bearer YOUR_ACCESS_TOKEN
+
+
+Problem 3:
+Frontend works but Swagger protected API fails.
+
+Possible reason:
+Angular automatically sends token using interceptor, but Swagger does not.
+
+Fix:
+Manually authorize in Swagger.
+
+
+Problem 4:
+Health check fails.
+
+Possible reasons:
+
+- Backend server stopped
+- Database issue
+- Wrong port
+- Migration/database configuration problem
+
+Fix:
+
+Check terminal running backend.
+Run migrations:
+
+cd backend
+..\.venv\Scripts\python.exe manage.py migrate
+
+
+Problem 5:
+Angular says backend server is not running.
+
+Check:
+
+http://127.0.0.1:8000/api/health/
+
+If health check works, backend is running.
+If health check does not work, start backend server.
+
+
+40. TWO TERMINALS - FINAL CONFIRMATION
+======================================
+
+Yes, your understanding is correct.
+
+For local development, this project needs two terminals.
+
+Terminal 1 is for backend:
+
+cd backend
+..\.venv\Scripts\python.exe manage.py runserver 127.0.0.1:8000
+
+Terminal 2 is for frontend:
+
+cd frontend
+npm start
+
+Why?
+
+Because Django and Angular are separate applications.
+
+Django backend:
+
+- Runs Python server
+- Provides APIs
+- Uses port 8000
+
+Angular frontend:
+
+- Runs Angular development server
+- Provides UI in browser
+- Uses port 4200
+
+Both should run at the same time.
+
+Browser opens Angular at:
+
+http://localhost:4200/
+
+Angular internally calls backend APIs at:
+
+http://127.0.0.1:8000/api
+
+So yes:
+
+One terminal for python manage.py runserver.
+One terminal for npm start.
+
+
+41. VERY SIMPLE MEMORY POINT
+============================
+
+Remember this:
+
+Backend = Django = APIs = port 8000
+Frontend = Angular = UI = port 4200
+Swagger = API testing/documentation page
+OpenAPI schema = machine-readable API definition
+Health check = confirms backend/database is alive
+
+Two terminals are needed because backend and frontend run as separate servers.
+
+
+42. SIMPLE RELATIONSHIP
+=======================
+
+The simple relationship is:
+
+Django REST APIs
+      ↓
+OpenAPI Schema
+      ↓
+Swagger UI
+
+Explanation:
+
+First, we create real APIs in Django REST Framework.
+
+Then drf-spectacular reads those APIs and creates an OpenAPI schema.
+
+Then Swagger UI reads the OpenAPI schema and displays a user-friendly API documentation page in the browser.
+
+So the flow is:
+
+Backend API code -> OpenAPI schema -> Swagger UI documentation page
+
+
+43. WHAT WE USED IN THIS PROJECT
+================================
+
+In this project, for API documentation we used:
+
+drf-spectacular
+
+drf-spectacular is a package for Django REST Framework.
+
+It generates:
+
+- OpenAPI schema
+- Swagger UI documentation
+
+In backend/config/settings.py, we added:
+
+drf_spectacular
+
+In REST_FRAMEWORK settings, we configured:
+
+DEFAULT_SCHEMA_CLASS = 'drf_spectacular.openapi.AutoSchema'
+
+This means Django REST Framework uses drf-spectacular to generate API documentation.
+
+We also configured SPECTACULAR_SETTINGS with:
+
+- API title
+- API description
+- API version
+
+This information appears on the Swagger page.
+
+
+44. WHERE SWAGGER/OPENAPI URLs ARE DEFINED
+==========================================
+
+Swagger and OpenAPI URLs are defined in:
+
+backend/config/urls.py
+
+Important URL definitions:
+
+path('api/schema/', SpectacularAPIView.as_view(), name='schema')
+
+path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui')
+
+These lines create two important URLs:
+
+/api/schema/
+/api/docs/
+
+/api/schema/ gives the OpenAPI schema.
+
+/api/docs/ gives the Swagger UI page.
+
+
+45. API DOCUMENTATION URLs IN YOUR PROJECT
+==========================================
+
+When backend is running, these URLs are available:
+
+Swagger UI:
+
+http://127.0.0.1:8000/api/docs/
+
+OpenAPI schema:
+
+http://127.0.0.1:8000/api/schema/
+
+Health check:
+
+http://127.0.0.1:8000/api/health/
+
+Important:
+
+These URLs work only when Django backend server is running on port 8000.
+
+
+46. HOW TO TEST PROTECTED API IN SWAGGER
+========================================
+
+Protected APIs require JWT token.
+
+Examples of protected APIs:
+
+GET /api/departments/
+GET /api/employees/
+GET /api/projects/
+GET /api/tasks/
+GET /api/dashboard/summary/
+
+Steps to test protected APIs in Swagger:
+
+Step 1:
+Open Swagger UI:
+
+http://127.0.0.1:8000/api/docs/
+
+Step 2:
+Call login API:
+
+POST /api/auth/login/
+
+Step 3:
+Copy the access token from login response.
+
+Step 4:
+Click Authorize button in Swagger.
+
+Step 5:
+Enter token like this:
+
+Bearer YOUR_ACCESS_TOKEN
+
+Step 6:
+Click Authorize.
+
+Step 7:
+Now call protected APIs.
+
+Swagger will automatically send:
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+47. WHAT HAPPENS IF TOKEN IS MISSING?
+=====================================
+
+If you call a protected API without token, backend rejects the request.
+
+Example:
+
+GET /api/employees/
+
+If token is missing, response may be:
+
+{
+  "detail": "Authentication credentials were not provided."
+}
+
+Meaning:
+
+You are trying to access a secured API without logging in or without sending JWT token.
+
+Solution:
+
+Login first, copy access token, and send it as:
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+48. WHAT ARE HTTP METHODS?
+==========================
+
+HTTP methods tell the backend what action we want to perform.
+
+Common HTTP methods used in this project:
+
+GET:
+Used to read/fetch data.
+
+Example:
+GET /api/employees/
+
+POST:
+Used to create new data or perform an action.
+
+Example:
+POST /api/employees/
+
+PUT:
+Used to update the full record.
+
+Example:
+PUT /api/employees/1/
+
+PATCH:
+Used to update only selected fields.
+
+Example:
+PATCH /api/employees/1/
+
+DELETE:
+Used to delete a record.
+
+Example:
+DELETE /api/employees/1/
+
+
+49. EXAMPLES FROM YOUR PROJECT
+==============================
+
+Register API:
+
+POST /api/auth/register/
+
+Purpose:
+Create a new user account.
+
+
+Login API:
+
+POST /api/auth/login/
+
+Purpose:
+Authenticate user and return JWT tokens.
+
+
+Employees API:
+
+GET /api/employees/
+POST /api/employees/
+GET /api/employees/{id}/
+PATCH /api/employees/{id}/
+DELETE /api/employees/{id}/
+
+Purpose:
+Manage employees.
+
+
+Projects API:
+
+GET /api/projects/
+POST /api/projects/
+POST /api/projects/{id}/assign-employees/
+POST /api/projects/{id}/change-status/
+
+Purpose:
+Manage projects and assign employees.
+
+
+Tasks API:
+
+GET /api/tasks/
+POST /api/tasks/
+POST /api/tasks/{id}/comments/
+
+Purpose:
+Manage tasks and task comments.
+
+
+Dashboard API:
+
+GET /api/dashboard/summary/
+
+Purpose:
+Show dashboard summary.
+
+
+50. WHY THIS IS IMPORTANT IN REAL PROJECTS
+==========================================
+
+In real companies, backend and frontend teams may work separately.
+
+Backend developer creates APIs.
+
+Frontend developer uses those APIs.
+
+API documentation helps frontend developers understand:
+
+- Which API URL to call
+- Which HTTP method to use
+- What request body is needed
+- What response body will come
+- Which APIs require authentication
+- What errors can happen
+- How to pass JWT token
+
+Without API documentation, frontend developers must ask backend developers again and again or read backend code manually.
+
+Swagger/OpenAPI avoids confusion.
+
+It works like a clear contract between backend and frontend.
+
+
+51. HOW ANGULAR USES THESE APIs
+===============================
+
+Angular does not use Swagger directly.
+
+Swagger is for developers to read and test APIs.
+
+Angular calls the actual backend APIs through services.
+
+Important frontend files:
+
+frontend/src/environments/environment.ts
+
+This contains API base URL:
+
+http://127.0.0.1:8000/api
+
+
+frontend/src/app/core/constants/api.constants.ts
+
+This contains API endpoint constants.
+
+
+frontend/src/app/core/services/
+
+This folder contains Angular services such as:
+
+- AuthService
+- DepartmentService
+- EmployeeService
+- ProjectService
+- TaskService
+- DashboardService
+
+These services use Angular HttpClient to call backend APIs.
+
+Example:
+
+Login page calls AuthService.
+AuthService calls /api/auth/login/.
+Backend returns JWT token.
+Angular stores token.
+Angular interceptor sends token for protected APIs.
+
+
+52. IMPORTANT SUMMARY
+=====================
+
+API Documentation:
+
+Explains how backend APIs work.
+
+
+OpenAPI Schema:
+
+Machine-readable API structure.
+
+
+Swagger UI:
+
+Human-friendly API documentation and testing page.
+
+
+Health Check:
+
+Simple API to confirm backend and database are working.
+
+
+53. YOUR PROJECT URLs
+=====================
+
+Swagger UI:
+
+http://127.0.0.1:8000/api/docs/
+
+
+OpenAPI Schema:
+
+http://127.0.0.1:8000/api/schema/
+
+
+Health Check:
+
+http://127.0.0.1:8000/api/health/
+
+
+Backend API Base URL:
+
+http://127.0.0.1:8000/api
+
+
+Frontend URL:
+
+http://localhost:4200/
+
+
+54. SIMPLE INTERVIEW ANSWER
+===========================
+
+You can say:
+
+In this project, we used Swagger/OpenAPI documentation to document and test our Django REST APIs. The OpenAPI schema describes all API endpoints, request bodies, response formats, authentication requirements, and parameters in a machine-readable format. Swagger UI reads that schema and displays it as an interactive web page where developers can test APIs directly. We also created a health check API to verify that the backend server and database connection are working properly.
+
+
+55. VERY SIMPLE EXPLANATION
+===========================
+
+API = Backend function available through URL
+
+API Documentation = Manual book for those URLs
+
+OpenAPI Schema = Technical machine-readable API manual
+
+Swagger UI = Browser page to read and test APIs
+
+Health Check = Quick test to know backend is alive
+
+

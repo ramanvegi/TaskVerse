@@ -1,0 +1,91 @@
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+  color: #0f172a;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(37, 99, 235, 0.08), transparent 28%),
+    radial-gradient(circle at 85% 10%, rgba(14, 165, 233, 0.08), transparent 26%),
+    #f8fafc;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  transition: transform 0.16s ease, box-shadow 0.16s ease, opacity 0.16s ease;
+}
+
+button:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+
+table {
+  border-spacing: 0;
+}
+
+::selection {
+  color: #fff;
+  background: #2563eb;
+}
+
+.admin-panel {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: center;
+  margin-top: 20px;
+  padding: 22px;
+  border: 1px solid #bfdbfe;
+  border-radius: 22px;
+  background: linear-gradient(180deg, #fff, #eff6ff);
+  box-shadow: 0 16px 38px rgba(37, 99, 235, 0.10);
+}
+
+.admin-panel h3 {
+  margin: 4px 0 6px;
+  color: #0f172a;
+  font-size: 24px;
+  letter-spacing: -0.04em;
+}
+
+.admin-panel span {
+  color: #64748b;
+  font-weight: 700;
+}
+
+.admin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.admin-actions a {
+  border-radius: 999px;
+  padding: 10px 13px;
+  color: #1d4ed8;
+  background: #dbeafe;
+  font-size: 13px;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+@media (max-width: 900px) {
+  .admin-panel {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-actions {
+    justify-content: flex-start;
+  }
+}
+

@@ -1,0 +1,1511 @@
+TASKVERSE - PROJECT EXPLANATION
+================================================================
+
+Project Folder:
+TaskVerse/
+
+Main Project Files:
+- README.md
+- PROJECT_EXPLANATION.txt
+- backend/
+- frontend/
+
+
+1. PROJECT OVERVIEW
+===================
+
+This project is a full-stack TaskVerse.
+
+It is used to manage company-related data such as:
+
+- Users
+- Departments
+- Employees
+- Projects
+- Tasks
+- Task comments
+- Dashboard summaries
+- Reports
+
+The project is built with a Django REST API backend and an Angular frontend.
+
+The backend creates APIs. The frontend consumes those APIs and displays screens for users.
+
+In simple words:
+
+- Django backend stores and manages data.
+- Django REST Framework exposes APIs.
+- Angular frontend displays pages and forms.
+- Angular calls backend APIs using HTTP requests.
+- JWT authentication is used to protect private APIs.
+
+
+2. TECHNOLOGIES USED
+====================
+
+Backend Technologies:
+
+- Python
+- Django
+- Django REST Framework
+- Simple JWT for authentication
+- SQLite for local development
+- MySQL-ready configuration
+- django-filter for filtering APIs
+- django-cors-headers for frontend/backend communication
+- drf-spectacular for Swagger/OpenAPI documentation
+- PyMySQL for MySQL support
+
+Frontend Technologies:
+
+- Angular 20
+- TypeScript
+- Angular Router
+- Angular Reactive Forms
+- Angular HttpClient
+- SCSS
+- RxJS
+
+Database:
+
+- SQLite is used by default for local development.
+- MySQL can also be configured using environment variables.
+
+Local SQLite database file:
+
+backend/db.sqlite3
+
+
+3. DID WE CREATE APIs?
+======================
+
+Yes. This project has a complete REST API backend.
+
+The APIs are created using Django REST Framework.
+
+Examples:
+
+- Login API
+- Register API
+- Department CRUD APIs
+- Employee CRUD APIs
+- Project CRUD APIs
+- Task CRUD APIs
+- Task comment APIs
+- Dashboard summary API
+- Report APIs
+
+The Angular frontend calls these APIs using Angular services.
+
+Example:
+
+When user logs in:
+
+POST /api/auth/login/
+
+When user creates employee:
+
+POST /api/employees/
+
+When user views projects:
+
+GET /api/projects/
+
+When user creates task:
+
+POST /api/tasks/
+
+
+4. BACKEND STRUCTURE
+====================
+
+Backend folder:
+
+backend/
+
+Important backend files and folders:
+
+backend/manage.py
+backend/db.sqlite3
+backend/requirements.txt
+backend/config/settings.py
+backend/config/urls.py
+backend/apps/
+backend/common/
+
+Backend apps:
+
+backend/apps/authentication/
+backend/apps/departments/
+backend/apps/employees/
+backend/apps/projects/
+backend/apps/tasks/
+backend/apps/dashboard/
+
+Each backend app usually contains:
+
+- models.py      : Database tables/models
+- serializers.py : Converts model data to JSON and validates input
+- views.py       : API logic
+- urls.py        : API routes
+- services.py    : Business logic
+- permissions.py : Permission rules
+- validators.py  : Custom validation logic
+- tests.py       : API tests
+
+
+5. BACKEND MODULES
+==================
+
+5.1 Authentication Module
+-------------------------
+
+Folder:
+backend/apps/authentication/
+
+Purpose:
+
+This module handles:
+
+- User registration
+- User login
+- User logout
+- Profile API
+- Change password API
+- JWT token handling
+
+Custom User Model:
+
+The project uses a custom User model.
+
+Important fields:
+
+- username
+- email
+- first_name
+- last_name
+- role
+- phone_number
+- is_active
+- created_at
+
+Important point:
+
+Login uses email, not username.
+
+In the User model:
+
+USERNAME_FIELD = 'email'
+
+User roles:
+
+- ADMIN
+- MANAGER
+- EMPLOYEE
+
+Admin control implementation:
+
+- ADMIN users have full management access.
+- Non-admin users can access authenticated read APIs where allowed.
+- Non-admin users cannot create, update, delete, assign, or change management records through direct API calls.
+- Backend permissions enforce this rule, so users cannot bypass the frontend by calling APIs manually.
+- Frontend pages remain accessible to authenticated users for viewing/searching/filtering.
+- Admin-only forms, tabs, edit buttons, delete buttons, assign controls, and management actions are hidden for non-admin users.
+- Dashboard admin panel is shown only for ADMIN users.
+
+Current management controls protected for ADMIN users:
+
+- Department create/edit/delete controls
+- Employee create/edit/delete controls
+- Project create/edit/delete/assignment/status controls
+- Task create/edit/delete/assignment/status controls
+
+Task comments are collaborative:
+
+- Authenticated users can view and add task comments.
+- Task creation, assignment, update, delete, and status management remain ADMIN-only.
+
+Authentication APIs:
+
+POST /api/auth/register/
+POST /api/auth/login/
+POST /api/auth/logout/
+GET  /api/auth/profile/
+POST /api/auth/change-password/
+POST /api/auth/token/refresh/
+
+
+5.2 Departments Module
+----------------------
+
+Folder:
+backend/apps/departments/
+
+Purpose:
+
+This module manages company departments.
+
+Department model fields:
+
+- name
+- code
+- description
+- is_active
+- created_at
+- updated_at
+
+Department APIs:
+
+GET    /api/departments/
+POST   /api/departments/
+GET    /api/departments/{id}/
+PUT    /api/departments/{id}/
+PATCH  /api/departments/{id}/
+DELETE /api/departments/{id}/
+
+Example departments added locally:
+
+- Angular
+- Data Analytics
+- Digital Marketing
+- Engineering
+- Human Resources
+- Java
+- Operations
+- Python
+- Sales
+- Software Development Enginee
+- Supply Chain Analysis
+
+The demo seed command also ensures these departments have related employees, projects, and tasks for testing filters.
+
+
+5.3 Employees Module
+--------------------
+
+Folder:
+backend/apps/employees/
+
+Purpose:
+
+This module manages employee records.
+
+Each employee belongs to one department.
+
+Employee model fields:
+
+- user
+- department
+- employee_code
+- first_name
+- last_name
+- email
+- phone_number
+- job_title
+- hire_date
+- status
+- address
+- created_at
+- updated_at
+
+Employee statuses:
+
+- ACTIVE
+- INACTIVE
+- ON_LEAVE
+
+Employee APIs:
+
+GET    /api/employees/
+POST   /api/employees/
+GET    /api/employees/{id}/
+PUT    /api/employees/{id}/
+PATCH  /api/employees/{id}/
+DELETE /api/employees/{id}/
+
+Restored local testing employee accounts:
+
+- Raman Vegi
+  - Email: raman@gmail.com
+  - Employee code: EMP0001
+  - Department: Python
+  - Job title: Python Developer
+
+- Yaswanth Vegi
+  - Email: yaswanth@gmail.com
+  - Employee code: EMP0002
+  - Department: Angular
+  - Job title: Angular Developer
+
+- TaskVerse Admin
+  - Email: admin@smartems.local
+  - Employee code: ADM-0001
+  - Department: Engineering
+  - Job title: System Administrator
+
+
+5.4 Projects Module
+-------------------
+
+Folder:
+backend/apps/projects/
+
+Purpose:
+
+This module manages projects.
+
+A project can have multiple employees assigned to it.
+
+Project model fields:
+
+- name
+- project_code
+- description
+- employees
+- start_date
+- end_date
+- status
+- is_active
+- created_at
+- updated_at
+
+Project statuses:
+
+- PLANNED
+- IN_PROGRESS
+- ON_HOLD
+- COMPLETED
+- CANCELLED
+
+Project APIs:
+
+GET    /api/projects/
+POST   /api/projects/
+GET    /api/projects/{id}/
+PUT    /api/projects/{id}/
+PATCH  /api/projects/{id}/
+DELETE /api/projects/{id}/
+POST   /api/projects/{id}/assign-employees/
+POST   /api/projects/{id}/change-status/
+
+Frontend improvement added:
+
+Earlier, employees were shown in a simple multi-select.
+Now project employee selection has:
+
+- Employee search
+- Checkbox selection
+- Selected employee chips
+- Ability to select only required employees
+
+Example:
+
+If user wants to assign only 2 employees to a project, user can search and select only those 2 employees.
+
+Restored demo project added:
+
+- Restored User Demo Content
+  - Project code: TV-USER-CONTENT
+  - Employees: Raman, Yaswanth, and TaskVerse Admin
+  - Purpose: validates restored login accounts, employee linking, project assignment, task assignment, and comments.
+
+
+5.5 Tasks Module
+----------------
+
+Folder:
+backend/apps/tasks/
+
+Purpose:
+
+This module manages tasks.
+
+A task belongs to a project and can be assigned to an employee.
+
+Task model fields:
+
+- project
+- assigned_to
+- title
+- description
+- due_date
+- priority
+- status
+- created_by
+- created_at
+- updated_at
+
+Task API response also includes computed frontend helper fields:
+
+- comments_count : Number of comments on the task
+- is_overdue     : true when due date has passed and the task is not completed
+
+Task statuses:
+
+- TODO
+- IN_PROGRESS
+- COMPLETED
+
+Task priorities:
+
+- LOW
+- MEDIUM
+- HIGH
+
+Task APIs:
+
+GET    /api/tasks/
+POST   /api/tasks/
+GET    /api/tasks/{id}/
+PUT    /api/tasks/{id}/
+PATCH  /api/tasks/{id}/
+DELETE /api/tasks/{id}/
+POST   /api/tasks/{id}/assign/
+POST   /api/tasks/{id}/change-status/
+GET    /api/tasks/{id}/comments/
+POST   /api/tasks/{id}/comments/
+
+Task comments are supported.
+
+Frontend task comment improvements:
+
+- Task table shows View comments (count)
+- Clicking View comments opens the comments viewer
+- Existing comments are displayed with author email and timestamp
+- User can add a new comment from the same viewer
+- Task list refreshes after adding a comment so comments_count is updated
+
+Overdue meaning:
+
+A task is overdue only when:
+
+ due_date < today
+ AND status is not COMPLETED
+
+Examples:
+
+- Due date yesterday + IN_PROGRESS = Overdue
+- Due date yesterday + TODO        = Overdue
+- Due date yesterday + COMPLETED  = Not overdue because work is complete
+
+Current seeded demo data keeps overdue realistic.
+It does not make every department overdue.
+Only a small set of open tasks are overdue.
+
+Restored user demo tasks:
+
+- Raman backend API content check
+- Yaswanth Angular UI content check
+- Admin validate restored demo accounts
+
+
+5.6 Dashboard and Reports Module
+--------------------------------
+
+Folder:
+backend/apps/dashboard/
+
+Purpose:
+
+This module provides dashboard summary and report data.
+
+Dashboard summary includes:
+
+- Total employees
+- Total departments
+- Total projects
+- Total tasks
+- Completed tasks
+- Pending tasks
+- Overdue tasks
+
+Overdue tasks in dashboard follow the same rule:
+
+- due_date is before today's date
+- status is not COMPLETED
+
+Dashboard and report APIs:
+
+GET /api/dashboard/summary/
+GET /api/reports/employees-by-department/
+GET /api/reports/tasks-by-employee/
+GET /api/reports/pending-tasks/
+GET /api/reports/completed-tasks/
+GET /api/reports/project-progress/
+
+
+6. API DOCUMENTATION
+====================
+
+Swagger/OpenAPI documentation is available after starting the backend server.
+
+Swagger UI:
+
+http://127.0.0.1:8000/api/docs/
+
+OpenAPI schema:
+
+http://127.0.0.1:8000/api/schema/
+
+Health check:
+
+http://127.0.0.1:8000/api/health/
+
+
+7. FRONTEND STRUCTURE
+=====================
+
+Frontend folder:
+
+frontend/
+
+Important frontend folders:
+
+frontend/src/app/core/
+frontend/src/app/features/
+frontend/src/app/layouts/
+frontend/src/app/shared/
+frontend/src/environments/
+
+
+7.1 core Folder
+---------------
+
+Folder:
+frontend/src/app/core/
+
+Purpose:
+
+This folder contains common frontend logic.
+
+Subfolders:
+
+core/constants/
+core/models/
+core/services/
+core/guards/
+core/interceptors/
+
+Important file:
+
+frontend/src/app/core/constants/api.constants.ts
+
+This file contains API endpoint constants.
+
+Example:
+
+auth.login    -> /api/auth/login/
+auth.register -> /api/auth/register/
+employees     -> /api/employees/
+projects      -> /api/projects/
+tasks         -> /api/tasks/
+
+
+7.2 models Folder
+-----------------
+
+Folder:
+frontend/src/app/core/models/
+
+Purpose:
+
+This folder contains TypeScript interfaces.
+
+Examples:
+
+- auth.model.ts
+- department.model.ts
+- employee.model.ts
+- project.model.ts
+- task.model.ts
+- dashboard.model.ts
+
+These interfaces define what data Angular expects from backend APIs.
+
+
+7.3 services Folder
+-------------------
+
+Folder:
+frontend/src/app/core/services/
+
+Purpose:
+
+Angular services call backend APIs.
+
+Important services:
+
+- auth.service.ts
+- department.service.ts
+- employee.service.ts
+- project.service.ts
+- task.service.ts
+- dashboard.service.ts
+- token-storage.service.ts
+
+Example:
+
+DepartmentService calls:
+
+GET /api/departments/
+POST /api/departments/
+PATCH /api/departments/{id}/
+DELETE /api/departments/{id}/
+
+
+8. FRONTEND FEATURES
+====================
+
+Folder:
+frontend/src/app/features/
+
+Pages/features created:
+
+- auth/login
+- auth/register
+- dashboard
+- departments
+- employees
+- projects
+- tasks
+- not-found
+
+
+8.1 Login Page
+--------------
+
+Files:
+
+login.component.ts
+login.component.html
+login.component.scss
+
+Purpose:
+
+- User enters email and password
+- Angular calls login API
+- Backend returns JWT tokens
+- Frontend stores token
+- User is redirected to dashboard
+
+
+8.2 Register Page
+-----------------
+
+Files:
+
+register.component.ts
+register.component.html
+register.component.scss
+
+Purpose:
+
+- Create a new user account
+- Call register API
+- Store JWT token after registration
+- Redirect to dashboard
+
+
+8.3 Dashboard Page
+------------------
+
+Files:
+
+dashboard.component.ts
+dashboard.component.html
+dashboard.component.scss
+
+Purpose:
+
+- Show dashboard summary cards
+- Show employees, departments, projects, tasks count
+
+
+8.4 Departments Page
+--------------------
+
+Files:
+
+departments.component.ts
+departments.component.html
+departments.component.scss
+department-form.component.ts/html/scss
+department-table.component.ts/html/scss
+
+Purpose:
+
+- Add department
+- Edit department
+- Delete department
+- Search department
+
+
+8.5 Employees Page
+------------------
+
+Files:
+
+employees.component.ts
+employees.component.html
+employees.component.scss
+employee-form.component.ts/html/scss
+employee-table.component.ts/html/scss
+
+Purpose:
+
+- Add employee
+- Select department
+- Edit employee
+- Delete employee
+- Filter by department/status
+
+
+8.6 Projects Page
+-----------------
+
+Files:
+
+projects.component.ts
+projects.component.html
+projects.component.scss
+project-form.component.ts/html/scss
+project-table.component.ts/html/scss
+
+Purpose:
+
+- Create project
+- Assign selected employees
+- Search employees while creating project
+- Edit project
+- Delete project
+- Filter by status
+
+
+8.7 Tasks Page
+--------------
+
+Files:
+
+tasks.component.ts
+tasks.component.html
+tasks.component.scss
+task-form.component.ts/html/scss
+task-table.component.ts/html/scss
+task-comments.component.ts/html/scss
+
+Purpose:
+
+- Create task
+- Assign task to employee
+- Select project
+- Set due date
+- Set priority
+- Set status
+- Add comments
+- View comments with comment count
+- See Overdue label for open tasks whose due date has passed
+- Filter by project, assignee, status, and priority
+- Delete task
+
+Comments UI:
+
+- Every task row has View comments (count)
+- Clicking it opens an inline comments viewer
+- User can read existing comments and add a new comment
+- Comment count is refreshed after adding a comment
+
+Overdue UI:
+
+- Overdue is shown only for open tasks with a past due date
+- COMPLETED tasks are not shown as overdue even if the due date is old
+
+
+8.8 Layout
+----------
+
+Folder:
+frontend/src/app/layouts/main-layout/
+
+Files:
+
+main-layout.component.ts
+main-layout.component.html
+main-layout.component.scss
+
+Purpose:
+
+- Sidebar navigation
+- Topbar
+- Logout button
+- Main page layout
+
+Sidebar links:
+
+- Dashboard
+- Departments
+- Employees
+- Projects
+- Tasks
+
+
+8.9 Shared Components
+---------------------
+
+Folder:
+frontend/src/app/shared/components/page-header/
+
+Files:
+
+page-header.component.ts
+page-header.component.html
+page-header.component.scss
+
+Purpose:
+
+Reusable page header with:
+
+- Page title
+- Search input
+- Filters
+- Search button
+
+Used in:
+
+- Departments
+- Employees
+- Projects
+- Tasks
+
+
+9. ANGULAR FILE STRUCTURE REFACTOR
+==================================
+
+Originally, many Angular components had HTML and CSS inside the .ts file.
+
+Example old style:
+
+component.ts contained:
+- TypeScript logic
+- HTML template
+- CSS styles
+
+Now the project follows proper Angular structure:
+
+component.ts    -> TypeScript logic only
+component.html  -> HTML/template code
+component.scss  -> CSS/SCSS styles
+
+This was completed for:
+
+frontend/src/app/features/
+frontend/src/app/layouts/
+frontend/src/app/shared/
+
+Verification result:
+
+- Components checked: 19
+- Inline template/styles remaining: None
+- Missing .html/.scss files: None
+- Angular build: Successful
+
+
+10. JWT AUTHENTICATION FLOW
+===========================
+
+This project uses JWT authentication.
+
+Login flow:
+
+1. User enters email and password in Angular login page.
+2. Angular calls:
+
+   POST /api/auth/login/
+
+3. Backend verifies credentials.
+4. Backend returns:
+
+   - access token
+   - refresh token
+   - user details
+
+5. Angular stores token.
+6. Angular sends token in protected API calls.
+
+Header format:
+
+Authorization: Bearer <access_token>
+
+Protected APIs require this token.
+
+Public APIs:
+
+- Register
+- Login
+- Token refresh
+- Health check
+- Swagger docs
+
+Protected APIs:
+
+- Departments
+- Employees
+- Projects
+- Tasks
+- Dashboard
+- Reports
+- Profile
+- Change password
+- Logout
+
+Role-based control:
+
+- ADMIN can manage Departments, Employees, Projects, and Tasks.
+- EMPLOYEE and MANAGER cannot perform management writes through the API.
+- EMPLOYEE and MANAGER can open list pages for viewing, searching, and filtering.
+- EMPLOYEE and MANAGER do not see admin-only forms, tabs, edit buttons, delete buttons, or management actions.
+- Task comments remain available to authenticated users.
+
+
+11. HOW FRONTEND CONNECTS TO BACKEND
+====================================
+
+Angular API base URL is configured in:
+
+frontend/src/environments/environment.ts
+
+Current value:
+
+http://127.0.0.1:8000/api
+
+API constants are defined in:
+
+frontend/src/app/core/constants/api.constants.ts
+
+Angular services call these endpoints using HttpClient.
+
+Example flow for adding an employee:
+
+1. User opens Employees page.
+2. Angular loads departments:
+
+   GET /api/departments/
+
+3. User fills employee form.
+4. Angular sends employee data:
+
+   POST /api/employees/
+
+5. Backend saves employee.
+6. Angular reloads employees list.
+
+
+12. HOW TO RUN THIS PROJECT ON ANOTHER MACHINE
+==============================================
+
+Prerequisites:
+
+Install these first:
+
+1. Python 3.12 or compatible Python 3 version
+2. Node.js compatible with Angular 20
+3. npm
+4. Git, if copying from repository
+5. Optional: MySQL, only if using MySQL instead of SQLite
+
+Recommended local setup uses SQLite because it does not require separate database installation.
+
+
+12.1 Copy or Clone Project
+--------------------------
+
+If using Git:
+
+ git clone <repository-url>
+ cd "TaskVerse"
+
+If copying manually:
+
+Copy the full project folder to the new machine.
+
+Project folder should contain:
+
+- backend/
+- frontend/
+- README.md
+- PROJECT_EXPLANATION.txt
+
+
+12.2 Backend Setup on Windows PowerShell
+----------------------------------------
+
+Open PowerShell in the project root folder:
+
+ cd "C:\path\to\TaskVerse"
+
+Create virtual environment:
+
+ py -m venv .venv
+
+Activate virtual environment:
+
+ .\.venv\Scripts\Activate.ps1
+
+If activation is blocked, run:
+
+ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+ .\.venv\Scripts\Activate.ps1
+
+Install backend dependencies:
+
+ python -m pip install --index-url https://pypi.org/simple -r backend\requirements.txt
+
+Go to backend folder:
+
+ cd backend
+
+Run migrations:
+
+ python manage.py migrate
+
+Optional but recommended for local demo/testing:
+
+ python manage.py seed_demo_content
+
+This command restores local demo content, including:
+
+- Departments for Angular, Python, Java, Digital Marketing, Sales, Data Analytics, Engineering, Operations, Human Resources, and existing local departments
+- Raman, Yaswanth, and Admin login accounts
+- Linked employee profiles for those accounts
+- Demo projects covering all departments
+- Demo tasks covering project, assignee, status, priority, unassigned, comments, completed, and overdue examples
+- Seeded comments for testing the task comments viewer
+
+The command is idempotent, so it can be run again safely if demo data is missing.
+
+Seeded demo data after latest local update:
+
+- Departments: 11
+- Employees: 16
+- Projects: 17
+- Tasks: 44
+- Comments: 88
+- Open overdue tasks: small realistic subset, not every department
+
+Run backend server:
+
+ python manage.py runserver 127.0.0.1:8000
+
+Backend will run at:
+
+ http://127.0.0.1:8000/
+
+Health check:
+
+ http://127.0.0.1:8000/api/health/
+
+Swagger docs:
+
+ http://127.0.0.1:8000/api/docs/
+
+
+12.3 Frontend Setup on Windows PowerShell
+-----------------------------------------
+
+Open a second PowerShell terminal.
+
+Go to frontend folder:
+
+ cd "C:\path\to\TaskVerse\frontend"
+
+Install frontend dependencies:
+
+ npm install
+
+Run Angular frontend:
+
+ npm start
+
+Frontend will run at:
+
+ http://localhost:4200/
+
+
+12.4 Running Backend and Frontend Together
+------------------------------------------
+
+You need two terminals.
+
+Terminal 1 - Backend:
+
+ cd "C:\path\to\TaskVerse\backend"
+ ..\.venv\Scripts\python.exe manage.py runserver 127.0.0.1:8000
+
+Terminal 2 - Frontend:
+
+ cd "C:\path\to\TaskVerse\frontend"
+ npm start
+
+Then open browser:
+
+ http://localhost:4200/
+
+
+12.5 Creating User on New Machine
+---------------------------------
+
+If the new machine has an empty database, create a user by using the Register page:
+
+ http://localhost:4200/register
+
+For the same local demo users and sample content used in this project, run:
+
+ cd backend
+ ..\.venv\Scripts\python.exe manage.py seed_demo_content
+
+This restores:
+
+- raman@gmail.com
+- yaswanth@gmail.com
+- admin@smartems.local
+
+It also creates linked employees, projects, tasks, and task comments for testing.
+
+Or create Django superuser:
+
+ cd backend
+ ..\.venv\Scripts\python.exe manage.py createsuperuser
+
+Important:
+
+This app login uses email and password.
+
+
+12.6 Optional MySQL Setup
+-------------------------
+
+By default, SQLite is used.
+
+If using MySQL:
+
+1. Create MySQL database:
+
+ CREATE DATABASE smart_employee_task_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+2. Create backend/.env file:
+
+ DB_ENGINE=mysql
+ DB_NAME=smart_employee_task_db
+ DB_USER=root
+ DB_PASSWORD=your_mysql_password
+ DB_HOST=127.0.0.1
+ DB_PORT=3306
+
+3. Run migrations again:
+
+ cd backend
+ ..\.venv\Scripts\python.exe manage.py migrate
+
+
+13. HOW TO TEST THIS PROJECT
+============================
+
+There are multiple ways to test this project:
+
+1. Backend health test
+2. Swagger API test
+3. Manual frontend test
+4. Backend automated tests
+5. Angular build test
+6. API test using PowerShell/Postman
+
+
+13.1 Test Backend Health
+------------------------
+
+Start backend server and open:
+
+ http://127.0.0.1:8000/api/health/
+
+Expected result:
+
+- success should be true
+- database should be connected
+
+
+13.2 Test Swagger APIs
+----------------------
+
+Start backend server and open:
+
+ http://127.0.0.1:8000/api/docs/
+
+You can test APIs from Swagger.
+
+Steps:
+
+1. Register user using /api/auth/register/
+2. Login using /api/auth/login/
+3. Copy access token
+4. Click Authorize in Swagger
+5. Enter:
+
+   Bearer <access_token>
+
+6. Test protected APIs like departments, employees, projects, tasks
+
+
+13.3 Test Frontend Manually
+---------------------------
+
+Start both backend and frontend.
+
+Open:
+
+ http://localhost:4200/
+
+Test these flows:
+
+1. Register new user
+2. Login
+3. Open Dashboard
+4. Add Department
+5. Add Employee
+6. Create Project
+7. Select employees for project
+8. Create Task
+9. Assign task to employee
+10. Add task comment
+11. Edit records
+12. Delete records
+13. Logout
+
+
+13.4 Test Backend with Django Tests
+-----------------------------------
+
+Run this from backend folder:
+
+ cd backend
+ ..\.venv\Scripts\python.exe manage.py test
+
+This runs backend tests from files like:
+
+apps/authentication/tests.py
+apps/departments/tests.py
+apps/employees/tests.py
+apps/projects/tests.py
+apps/tasks/tests.py
+apps/dashboard/tests.py
+
+
+13.5 Test Angular Build
+-----------------------
+
+Run this from frontend folder:
+
+ cd frontend
+ npm run build
+
+Expected result:
+
+Application bundle generation complete.
+
+This confirms Angular compiles successfully.
+
+
+13.6 Test Login API Using PowerShell
+------------------------------------
+
+Example:
+
+ $body = @{ email = "test@example.com"; password = "YourPassword123!" } | ConvertTo-Json
+ Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/auth/login/" -Method Post -ContentType "application/json" -Body $body
+
+If login is successful, API returns user data and tokens.
+
+
+13.7 Test Department API Using PowerShell
+-----------------------------------------
+
+First login and get token.
+
+Then call protected API:
+
+ $headers = @{ Authorization = "Bearer YOUR_ACCESS_TOKEN" }
+ Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/departments/" -Method Get -Headers $headers
+
+
+14. COMMON ISSUES AND FIXES
+===========================
+
+Issue: Backend not running
+
+Fix:
+
+ cd backend
+ ..\.venv\Scripts\python.exe manage.py runserver 127.0.0.1:8000
+
+
+Issue: Frontend says backend server is not running
+
+Fix:
+
+Check backend health:
+
+ http://127.0.0.1:8000/api/health/
+
+Make sure Angular environment points to:
+
+ http://127.0.0.1:8000/api
+
+
+Issue: PowerShell blocks venv activation
+
+Fix:
+
+ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+ .\.venv\Scripts\Activate.ps1
+
+
+Issue: npm command fails
+
+Fix:
+
+Install Node.js and npm.
+Then run:
+
+ npm install
+
+
+Issue: Database tables missing
+
+Fix:
+
+ cd backend
+ ..\.venv\Scripts\python.exe manage.py migrate
+
+
+Issue: User forgot password
+
+Fix:
+
+ cd backend
+ ..\.venv\Scripts\python.exe manage.py changepassword user@example.com
+
+
+15. IMPORTANT LOCAL LOGIN NOTE
+==============================
+
+This project login uses:
+
+Email + Password
+
+Not username + password.
+
+For a fresh setup on another machine, register a new user from frontend or create a superuser from backend.
+
+For local demo testing, run seed_demo_content to restore the documented Raman, Yaswanth, and Admin accounts.
+Those credentials are local demo credentials only.
+
+For security, do not store real production passwords inside documentation.
+
+
+16. PROJECT SUMMARY FOR PRESENTATION
+====================================
+
+This is a TaskVerse built using Django REST Framework and Angular.
+
+The backend provides REST APIs for authentication, departments, employees, projects, tasks, comments, dashboard summary, and reports.
+
+The frontend is built using Angular and consumes the backend APIs using Angular services and HttpClient.
+
+JWT authentication is used to secure APIs.
+
+SQLite is used for local development, and MySQL support is available.
+
+The frontend has proper Angular structure with separate TypeScript, HTML, and SCSS files.
+
+Main modules created:
+
+- Authentication
+- Departments
+- Employees
+- Projects
+- Tasks
+- Dashboard
+- Reports
+
+Main APIs created:
+
+- Register API
+- Login API
+- Logout API
+- Profile API
+- Change password API
+- Department CRUD APIs
+- Employee CRUD APIs
+- Project CRUD APIs
+- Project employee assignment API
+- Task CRUD APIs
+- Task assignment/status APIs
+- Task comment APIs
+- Dashboard API
+- Report APIs
+- Health check API
+
+This project demonstrates full-stack development with backend APIs, frontend UI, authentication, database relationships, validation, filtering, and modular code structure.
+
+
+17. FINAL SHORT ANSWER
+======================
+
+Yes, APIs were created.
+
+The backend is a Django REST API backend.
+The frontend is an Angular application.
+The frontend consumes APIs from the backend.
+
+The project can be run on any other machine by:
+
+1. Installing Python and Node.js
+2. Creating Python virtual environment
+3. Installing backend requirements
+4. Running migrations
+5. Starting Django server
+6. Installing frontend npm packages
+7. Starting Angular server
+
+Backend URL:
+
+http://127.0.0.1:8000/
+
+Frontend URL:
+
+http://localhost:4200/
+
+Swagger API Docs:
+
+http://127.0.0.1:8000/api/docs/
+
+
+
+Login credentials for testing:
+
+Email: raman@gmail.com
+Password: Dev#Pass725!2026
+Employee: Raman Vegi, EMP0001, Python Developer
+
+Email: yaswanth@gmail.com
+Password: Yaswanth12345
+Employee: Yaswanth Vegi, EMP0002, Angular Developer
+
+Email: admin@smartems.local
+Password: Admin#Pass725!2026
+Employee: TaskVerse Admin, ADM-0001, System Administrator
+
+If any of these users or sample records are missing, restore them with:
+
+ cd backend
+ ..\.venv\Scripts\python.exe manage.py seed_demo_content
+
+The seed command uses Django password hashing and can be run multiple times safely.

@@ -1,0 +1,7 @@
+<section class="panel form-panel"><h3>{{ editingId ? 'Edit Employee' : 'Add Employee' }}</h3>
+  <form [formGroup]="form" (ngSubmit)="save.emit()" class="employee-form">
+    <label>Department<select formControlName="department"><option [ngValue]="0">Select department</option>@for (department of departments; track department.id) {<option [ngValue]="department.id">{{ department.name }}</option>}</select></label>
+    <label>Code<input formControlName="employee_code" placeholder="EMP001" /></label><label>First name<input formControlName="first_name" /></label><label>Last name<input formControlName="last_name" /></label><label>Email<input type="email" formControlName="email" /></label><label>Phone<input formControlName="phone_number" /></label><label>Job title<input formControlName="job_title" /></label><label>Hire date<input type="date" formControlName="hire_date" /></label><label>Status<select formControlName="status"><option value="ACTIVE">Active</option><option value="INACTIVE">Inactive</option><option value="ON_LEAVE">On Leave</option></select></label><label class="wide">Address<input formControlName="address" /></label>
+    <div class="actions"><button type="submit" [disabled]="form.invalid || saving">{{ saving ? 'Saving...' : 'Save' }}</button>@if (editingId) { <button type="button" class="secondary" (click)="cancel.emit()">Cancel</button> }</div>
+  </form>@if (error) { <div class="alert">{{ error }}</div> }
+</section>

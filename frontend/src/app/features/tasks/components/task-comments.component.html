@@ -1,0 +1,37 @@
+@if (task) {
+  <section class="panel comments" id="task-comments-viewer">
+    <div class="header">
+      <div>
+        <p class="eyebrow">Task comments</p>
+        <h3>{{ task.title }}</h3>
+        <small>{{ task.project_detail.name }} · {{ comments.length }} comment{{ comments.length === 1 ? '' : 's' }}</small>
+      </div>
+      <button type="button" class="secondary" (click)="close.emit()">Close</button>
+    </div>
+
+    @if (error) { <p class="error">{{ error }}</p> }
+
+    <form (ngSubmit)="add.emit(messageControl.value)">
+      <textarea [formControl]="messageControl" placeholder="Write a comment for this task" rows="3" aria-label="Task comment message"></textarea>
+      <button type="submit" [disabled]="saving || !messageControl.value.trim()">{{ saving ? 'Adding...' : 'Add comment' }}</button>
+    </form>
+
+    @if (loading) {
+      <p class="state">Loading comments...</p>
+    } @else if (!comments.length) {
+      <p class="state">No comments yet. Add the first update for this task.</p>
+    } @else {
+      <div class="comment-list">
+        @for (comment of comments; track comment.id) {
+          <article>
+            <div class="comment-meta">
+              <strong>{{ comment.author_email || 'User' }}</strong>
+              <small>{{ comment.created_at | date:'medium' }}</small>
+            </div>
+            <p>{{ comment.message }}</p>
+          </article>
+        }
+      </div>
+    }
+  </section>
+}

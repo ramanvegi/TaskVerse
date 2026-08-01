@@ -1,0 +1,112 @@
+<section class="panel form-panel">
+  <div class="form-header">
+    <h3>{{ editingId ? 'Edit Project' : 'Create Project' }}</h3>
+    <p>Enter project details and assign only the employees you need.</p>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="save.emit()" class="project-form">
+    <label class="field">
+      Name
+      <input formControlName="name" placeholder="Project name" />
+    </label>
+
+    <label class="field">
+      Code
+      <input formControlName="project_code" placeholder="PRJ001" />
+    </label>
+
+    <label class="field">
+      Start date
+      <input type="date" formControlName="start_date" />
+    </label>
+
+    <label class="field">
+      End date
+      <input type="date" formControlName="end_date" />
+    </label>
+
+    <label class="field">
+      Status
+      <select formControlName="status">
+        @for (status of statuses; track status) {
+          <option [value]="status">{{ status }}</option>
+        }
+      </select>
+    </label>
+
+    <label class="field full">
+      Description
+      <textarea formControlName="description" rows="3" placeholder="Short project description"></textarea>
+    </label>
+
+    <div class="employee-picker full">
+      <div class="picker-title">
+        <div>
+          <span class="field-title">Employees</span>
+          <small>Select one or more employees for this project.</small>
+        </div>
+        <span class="count-badge">{{ selectedEmployeeIds().length }} selected</span>
+      </div>
+
+      <input
+        class="employee-search"
+        type="search"
+        placeholder="Search by employee name, code, or email"
+        [value]="employeeSearch"
+        (input)="employeeSearch = $any($event.target).value"
+      />
+
+      @if (selectedEmployees().length) {
+        <div class="selected-employees">
+          @for (employee of selectedEmployees(); track employee.id) {
+            <button type="button" class="chip" (click)="removeEmployee(employee.id)">
+              {{ employee.full_name }} <span>×</span>
+            </button>
+          }
+        </div>
+      }
+
+      <div class="employee-options">
+        @if (filteredEmployees().length) {
+          @for (employee of filteredEmployees(); track employee.id) {
+            <label class="employee-row">
+              <input
+                type="checkbox"
+                [checked]="isEmployeeSelected(employee.id)"
+                (change)="toggleEmployee(employee.id, $any($event.target).checked)"
+              />
+              <span class="avatar">{{ employee.full_name.charAt(0) }}</span>
+              <span class="employee-info">
+                <strong>{{ employee.full_name }}</strong>
+                <small>{{ employee.employee_code }} · {{ employee.email }}</small>
+              </span>
+            </label>
+          }
+        } @else {
+          <p class="empty">No active employees found.</p>
+        }
+      </div>
+    </div>
+
+    <div class="form-footer full">
+      <label class="checkbox">
+        <input type="checkbox" formControlName="is_active" />
+        Active project
+      </label>
+
+      <div class="actions">
+        <button type="submit" [disabled]="form.invalid || saving">
+          {{ saving ? 'Saving...' : 'Save Project' }}
+        </button>
+        @if (editingId) {
+          <button type="button" class="secondary" (click)="cancel.emit()">Cancel</button>
+        }
+      </div>
+    </div>
+  </form>
+
+  @if (error) {
+    <div class="alert">{{ error }}</div>
+  }
+</section>
+

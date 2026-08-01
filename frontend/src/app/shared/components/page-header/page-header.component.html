@@ -1,0 +1,11 @@
+<section class="page-header">
+  <div>
+    <p>{{ eyebrow() }}</p>
+    <h2>{{ title() }}</h2>
+  </div>
+  <form class="filters" (ngSubmit)="submitted.emit()">
+    <input [formControl]="searchControl()" [placeholder]="placeholder()" />
+    <ng-content />
+    <button type="submit">{{ buttonText() }}</button>
+  </form>
+</section>

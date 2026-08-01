@@ -1,0 +1,77 @@
+.panel {
+  overflow: hidden;
+  margin-bottom: 20px;
+  padding: 0;
+  border: 1px solid #e2e8f0;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 16px 38px rgba(15, 23, 42, 0.08);
+}
+.state {
+  margin: 0;
+  padding: 22px;
+  color: #64748b;
+  font-weight: 800;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+thead {
+  background: linear-gradient(180deg, #f8fbff, #eff6ff);
+}
+th,
+td {
+  text-align: left;
+  padding: 16px 18px;
+  border-bottom: 1px solid #e2e8f0;
+}
+th {
+  color: #475569;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+tbody tr {
+  transition: background 0.16s ease, transform 0.16s ease;
+}
+tbody tr:hover {
+  background: #f8fbff;
+}
+span {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 5px 10px;
+  color: #166534;
+  background: #dcfce7;
+  font-size: 12px;
+  font-weight: 900;
+}
+.inactive,
+.danger-status { color: #991b1b; background: #fee2e2; }
+.leave { color: #92400e; background: #fef3c7; }
+.overdue {
+  margin-left: 8px;
+}
+.row-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+button {
+  border: 0;
+  border-radius: 12px;
+  padding: 9px 13px;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #fff;
+  cursor: pointer;
+  font-weight: 900;
+  box-shadow: 0 8px 16px rgba(37, 99, 235, 0.18);
+}
+.secondary { background: #e2e8f0; color: #0f172a; box-shadow: none; }
+.danger { background: linear-gradient(135deg, #ef4444, #dc2626); box-shadow: 0 8px 16px rgba(220, 38, 38, 0.18); }
+@media (max-width: 900px) {
+  table { display: block; overflow-x: auto; }
+}

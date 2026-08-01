@@ -1,0 +1,16 @@
+<app-page-header eyebrow="Work tracking" title="Tasks" placeholder="Search tasks" [searchControl]="searchControl" (submitted)="loadTasks()">
+  <select [formControl]="projectFilter" aria-label="Filter tasks by project"><option value="">All projects</option>@for (project of projects(); track project.id) {<option [value]="project.id">{{ project.name }}</option>}</select>
+  <select [formControl]="employeeFilter" aria-label="Filter tasks by assignee"><option value="">All assignees</option>@for (employee of employees(); track employee.id) {<option [value]="employee.id">{{ employee.full_name }}</option>}</select>
+  <select [formControl]="statusFilter" aria-label="Filter tasks by status"><option value="">All statuses</option>@for (status of statuses; track status) {<option [value]="status">{{ status }}</option>}</select>
+  <select [formControl]="priorityFilter" aria-label="Filter tasks by priority"><option value="">All priorities</option>@for (priority of priorities; track priority) {<option [value]="priority">{{ priority }}</option>}</select>
+</app-page-header>
+<section class="tab-summary">
+  <article><span>Total tasks</span><strong>{{ tasks().length }}</strong><small>tasks in current view</small></article>
+  <article><span>Projects loaded</span><strong>{{ projects().length }}</strong><small>available for task mapping</small></article>
+  <article><span>Priorities</span><strong>{{ priorities.length }}</strong><small>low, medium, high</small></article>
+</section>
+@if (auth.isAdmin()) {
+  <app-task-form [form]="form" [projects]="projects()" [employees]="employees()" [statuses]="statuses" [priorities]="priorities" [editingId]="editingId()" [saving]="saving()" [error]="error()" (save)="save()" (cancel)="cancelEdit()"></app-task-form>
+}
+<app-task-comments [task]="selectedTask()" [comments]="comments()" [loading]="commentsLoading()" [saving]="commentsSaving()" [error]="commentsError()" [messageControl]="commentControl" (add)="addComment($event)" (close)="closeComments()"></app-task-comments>
+<app-task-table [tasks]="tasks()" [loading]="loading()" [canManage]="auth.isAdmin()" (edit)="edit($event)" (remove)="remove($event)" (comments)="openComments($event)"></app-task-table>

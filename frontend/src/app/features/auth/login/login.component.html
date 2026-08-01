@@ -1,0 +1,23 @@
+<section class="auth-page">
+  <form [formGroup]="form" (ngSubmit)="submit()" class="auth-card">
+    <p class="eyebrow">Welcome back</p>
+    <h1>Login</h1>
+    <p class="muted">Access your TaskVerse dashboard.</p>
+
+    @if (error()) { <div class="alert">{{ error() }}</div> }
+
+    <label>Email</label>
+    <input type="email" formControlName="email" placeholder="you@example.com" />
+    @if (form.controls.email.touched && form.controls.email.invalid) { <small>Email is required.</small> }
+
+    <label>Password</label>
+    <input type="password" formControlName="password" placeholder="Password" />
+    @if (form.controls.password.touched && form.controls.password.invalid) { <small>Password is required.</small> }
+
+    <button type="submit" [disabled]="form.invalid || loading()">
+      {{ loading() ? 'Logging in...' : 'Login' }}
+    </button>
+
+    <p class="switch">New here? <a routerLink="/register">Create an account</a></p>
+  </form>
+</section>
