@@ -327,4 +327,5 @@ Set-Location T:\backend
 - More report filters
 - Employee profile image uploads
 - Better Angular UI polish
+- Automated deployment configurations
 
